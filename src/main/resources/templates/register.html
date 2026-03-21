@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Register</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<div class="card">
+    <h2>Create Account</h2>
+
+    <form id="registerForm">
+        <input type="text" name="firstName" placeholder="First Name" required>
+        <input type="text" name="lastName" placeholder="Last Name" required>
+        <input type="email" name="email" placeholder="Email" required>
+        <input type="password" name="password" placeholder="Password" required>
+
+        <button type="submit">Register</button>
+    </form>
+
+    <p class="message" id="message"></p>
+</div>
+
+<script>
+    document.getElementById("registerForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        const data = {
+            firstName: this.firstName.value,
+            lastName: this.lastName.value,
+            email: this.email.value,
+            password: this.password.value
+        };
+
+        fetch("/auth/register", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(data)
+        })
+        .then(res => res.text())
+        .then(msg => {
+            document.getElementById("message").innerText = msg;
+
+            setTimeout(() => {
+                window.location.href = "/verify?email=" + data.email;
+            }, 1000);
+        });
+    });
+</script>
+
+</body>
+</html>
+
+<!--<script>-->
+<!--    const urlParams = new URLSearchParams(window.location.search);-->
+<!--    const email = urlParams.get("email");-->
+
+<!--    document.getElementById("verifyForm").addEventListener("submit", function(e) {-->
+<!--        e.preventDefault();-->
+
+<!--        const code = this.code.value;-->
+
+<!--        fetch(`/auth/verify?email=${email}&code=${code}`, {-->
+<!--            method: "POST"-->
+<!--        })-->
+<!--        .then(res => res.text())-->
+<!--        .then(msg => {-->
+<!--            document.getElementById("message").innerText = msg;-->
+<!--        });-->
+<!--    });-->
+<!--</script>-->

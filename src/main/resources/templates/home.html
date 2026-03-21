@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Home</title>
+    <meta charset="UTF-8">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .card {
+            background: white;
+            color: black;
+            padding: 25px;
+            border-radius: 12px;
+            width: 350px;
+            margin: 20px auto;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .table-card {
+            background: white;
+            color: black;
+            padding: 25px;
+            border-radius: 12px;
+            width: 700px;
+            margin: 20px auto;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        button {
+            padding: 10px 15px;
+            border: none;
+            background: #667eea;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        button:hover {
+            background: #5a67d8;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th {
+            background: #f1f2f6;
+        }
+
+        tr:hover {
+            background: #f9f9f9;
+        }
+
+        .nav {
+            margin-bottom: 10px;
+        }
+
+        .nav a {
+            text-decoration: none;
+            font-size: 18px;
+            margin: 0 15px;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .status-ok {
+            color: green;
+            font-weight: bold;
+        }
+
+        .status-bad {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<!-- CHECK-IN BUTTON -->
+<button id="checkInBtn">Вийшов на роботу</button>
+
+<script>
+    document.getElementById("checkInBtn").addEventListener("click", function() {
+        window.location.href = "/checkin";
+    });
+</script>
+
+<!-- USER CARD -->
+<div class="card">
+    <h2>Welcome 🎉</h2>
+
+    <p th:text="'Logged in as: ' + ${email}"></p>
+
+    <form method="post" action="/logout">
+        <button type="submit">Logout</button>
+    </form>
+</div>
+
+
+<div class="table-card">
+
+    <h3>📅 Work History</h3>
+    <div class="nav">
+
+        <!-- PREVIOUS -->
+        <a th:href="@{/employee/home(year=${prevYear}, month=${prevMonth})}">
+            ⬅️
+        </a>
+
+        <!-- CURRENT -->
+        <span style="font-weight: bold;">
+        <span th:text="${month}"></span> /
+        <span th:text="${year}"></span>
+    </span>
+
+        <!-- NEXT -->
+        <a th:href="@{/employee/home(year=${nextYear}, month=${nextMonth})}">
+            ➡️
+        </a>
+
+    </div>
+    <!-- TABLE -->
+    <table>
+        <tr>
+            <th>Date</th>
+            <th>Check-in</th>
+            <th>Status</th>
+        </tr>
+
+        <tr th:each="day : ${days}">
+            <td th:text="${day.localDate}"></td>
+
+            <td th:text="${day.checkInTime} ?: '—'"></td>
+
+            <td>
+                <span th:if="${day.confirmed == true}" class="status-ok">
+                    ✅ At work
+                </span>
+                <span th:if="${day.confirmed == false}" class="status-bad">
+                    ❌ Absent
+                </span>
+            </td>
+        </tr>
+    </table>
+
+</div>
+
+</body>
+</html>

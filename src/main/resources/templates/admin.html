@@ -1,0 +1,161 @@
+
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin Dashboard</title>
+    <meta charset="UTF-8">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            background: #f4f6f9;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 220px;
+            height: 100vh;
+            background: #2f3542;
+            color: white;
+            padding: 20px;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+        }
+
+        .sidebar a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+
+        .sidebar a:hover {
+            background: #57606f;
+        }
+
+        /* MAIN */
+        .main {
+            flex: 1;
+            padding: 30px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        tr:hover {
+            background: #f1f2f6;
+        }
+
+        .btn {
+            padding: 6px 12px;
+            border: none;
+            background: #3742fa;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+
+        .btn:hover {
+            background: #2f35d6;
+        }
+
+        .btn-secondary {
+            background: #2ed573;
+        }
+
+        .btn-secondary:hover {
+            background: #26c281;
+        }
+    </style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <h2>Admin</h2>
+
+    <a href="/admin">Employees</a>
+    <a href="/admin/location">Locations</a>
+    <a href="/home">Home</a>
+
+    <form method="post" action="/logout">
+        <button class="btn" style="width:100%; margin-top:20px;">Logout</button>
+    </form>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main">
+    <h1>Employees</h1>
+
+    <div class="card">
+        <table>
+            <tr>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Actions</th>
+            </tr>
+
+            <tr th:each="user : ${users}">
+                <td th:text="${user.email}"></td>
+
+                <td>
+                    <span th:text="${user.role}"></span>
+                </td>
+
+                <td>
+                    <!-- View details -->
+                    <a th:href="@{'/admin/user/' + ${user.id}}">
+                        <button class="btn">View</button>
+                    </a>
+
+                    <!-- Toggle role -->
+                    <button class="btn btn-secondary"
+                            th:onclick="'toggleRole(' + ${user.id} + ')'">
+                        Toggle Role
+                    </button>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <form method="get" action="/admin/export-excel">
+        <button class="btn">Export Attendance Excel</button>
+    </form>
+</div>
+
+<script>
+    function toggleRole(userId) {
+        fetch('/admin/user/toggle-role/' + userId, {
+            method: 'POST'
+        }).then(() => location.reload());
+    }
+</script>
+
+</body>
+</html>

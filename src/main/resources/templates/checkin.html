@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Check-in</title>
+    <meta charset="UTF-8">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #3742fa, #70a1ff);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: white;
+        }
+
+        .card {
+            background: white;
+            color: #2f3542;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            text-align: center;
+            width: 320px;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            background: #3742fa;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background: #2f35d6;
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .message {
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .success {
+            color: green;
+        }
+
+        .error {
+            color: red;
+        }
+
+        .loading {
+            color: #57606f;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>📍 Check-in</h2>
+    <p>Підтвердіть своє місцезнаходження</p>
+
+    <button id="getLocationBtn" class="btn">
+        Відправити місцезнаходження
+    </button>
+
+    <p id="message" class="message"></p>
+</div>
+
+<script>
+    const btn = document.getElementById("getLocationBtn");
+    const message = document.getElementById("message");
+
+    btn.addEventListener("click", function() {
+        message.innerText = "Отримуємо локацію...";
+        message.className = "message loading";
+        btn.disabled = true;
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+
+                const latitude = position.coords.latitude;
+                const longitude = position.coords.longitude;
+
+                fetch("/checkin/confirm", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({latitude, longitude})
+                })
+                .then(res => res.text())
+                .then(msg => {
+                    message.innerText = msg;
+                    message.className = "message success";
+                    btn.disabled = false;
+                });
+
+            }, function(error) {
+                message.innerText = "❌ Не вдалося отримати локацію";
+                message.className = "message error";
+                btn.disabled = false;
+            });
+        } else {
+            message.innerText = "❌ Geolocation не підтримується";
+            message.className = "message error";
+            btn.disabled = false;
+        }
+    });
+</script>
+
+</body>
+</html>

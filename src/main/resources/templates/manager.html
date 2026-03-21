@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Manager Dashboard</title>
+    <meta charset="UTF-8">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            background: #f4f6f9;
+        }
+
+        .sidebar {
+            width: 220px;
+            height: 100vh;
+            background: #2f3542;
+            color: white;
+            padding: 20px;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+        }
+
+        .sidebar a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+
+        .sidebar a:hover {
+            background: #57606f;
+        }
+
+        .main {
+            flex: 1;
+            padding: 30px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tr:hover {
+            background: #f1f2f6;
+        }
+
+        .btn {
+            padding: 6px 12px;
+            border: none;
+            background: #3742fa;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #2f35d6;
+        }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>Manager</h2>
+
+    <a href="/manager">Employees</a>
+    <a href="/home">Home</a>
+
+    <form method="post" action="/logout">
+        <button class="btn" style="width:100%; margin-top:20px;">Logout</button>
+    </form>
+</div>
+
+<div class="main">
+    <h1>Employees</h1>
+
+    <div class="card">
+        <table>
+            <tr>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Action</th>
+            </tr>
+
+            <tr th:each="user : ${users}">
+                <td th:text="${user.email}"></td>
+                <td th:text="${user.role}"></td>
+                <td>
+                    <a th:href="@{'/manager/user/' + ${user.id}}">
+                        <button class="btn">View</button>
+                    </a>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>

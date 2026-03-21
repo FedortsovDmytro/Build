@@ -1,0 +1,358 @@
+
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <title>Locations</title>-->
+<!--    <meta charset="UTF-8">-->
+
+<!--    <style>-->
+<!--        body {-->
+<!--            margin: 0;-->
+<!--            font-family: Arial, sans-serif;-->
+<!--            background: #f4f6f9;-->
+<!--        }-->
+
+<!--        .container {-->
+<!--            max-width: 1000px;-->
+<!--            margin: 40px auto;-->
+<!--        }-->
+
+<!--        h2, h3 {-->
+<!--            margin-bottom: 15px;-->
+<!--        }-->
+
+<!--        .card {-->
+<!--            background: white;-->
+<!--            padding: 20px;-->
+<!--            border-radius: 10px;-->
+<!--            box-shadow: 0 5px 15px rgba(0,0,0,0.1);-->
+<!--            margin-bottom: 30px;-->
+<!--        }-->
+
+<!--        table {-->
+<!--            width: 100%;-->
+<!--            border-collapse: collapse;-->
+<!--        }-->
+
+<!--        th {-->
+<!--            background: #2f3542;-->
+<!--            color: white;-->
+<!--            text-align: left;-->
+<!--            padding: 12px;-->
+<!--        }-->
+
+<!--        td {-->
+<!--            padding: 12px;-->
+<!--            border-bottom: 1px solid #ddd;-->
+<!--        }-->
+
+<!--        tr:hover {-->
+<!--            background: #f1f2f6;-->
+<!--        }-->
+
+<!--        input {-->
+<!--            width: 100%;-->
+<!--            padding: 10px;-->
+<!--            margin-bottom: 10px;-->
+<!--            border-radius: 6px;-->
+<!--            border: 1px solid #ccc;-->
+<!--        }-->
+
+<!--        input:focus {-->
+<!--            outline: none;-->
+<!--            border-color: #3742fa;-->
+<!--        }-->
+
+<!--        .btn {-->
+<!--            width: 100%;-->
+<!--            padding: 12px;-->
+<!--            background: #3742fa;-->
+<!--            color: white;-->
+<!--            border: none;-->
+<!--            border-radius: 6px;-->
+<!--            cursor: pointer;-->
+<!--            font-size: 16px;-->
+<!--        }-->
+
+<!--        .btn:hover {-->
+<!--            background: #2f35d6;-->
+<!--        }-->
+
+<!--        .success {-->
+<!--            color: green;-->
+<!--            margin-bottom: 10px;-->
+<!--        }-->
+
+<!--        .error {-->
+<!--            color: red;-->
+<!--            margin-bottom: 10px;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--<div class="container">-->
+
+<!--    <h2>📍 Locations</h2>-->
+
+<!--    &lt;!&ndash; TABLE &ndash;&gt;-->
+<!--    <div class="card">-->
+<!--        <table>-->
+<!--            <tr>-->
+<!--                <th>Name</th>-->
+<!--                <th>Address</th>-->
+<!--                <th>Radius</th>-->
+<!--            </tr>-->
+
+<!--            <tr th:each="loc : ${locations}">-->
+<!--                <td th:text="${loc.name}"></td>-->
+<!--                <td th:text="${loc.address}"></td>-->
+<!--                <td th:text="${loc.radiusInMeters} + ' m'"></td>-->
+<!--            </tr>-->
+<!--        </table>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; FORM &ndash;&gt;-->
+<!--    <div class="card">-->
+<!--        <h3>Add Location</h3>-->
+
+<!--        <p class="success" th:if="${param.success}">-->
+<!--            Location added successfully!-->
+<!--        </p>-->
+
+<!--        <form action="/admin/location" method="post">-->
+<!--            <input type="text" name="name" placeholder="Name" required>-->
+<!--            <input type="text" name="address" placeholder="Address" required>-->
+<!--            <input type="number" step="any" name="latitude" placeholder="Latitude" required>-->
+<!--            <input type="number" step="any" name="longitude" placeholder="Longitude" required>-->
+<!--            <input type="number" step="any" name="radiusInMeters" placeholder="Radius (meters)" required>-->
+
+<!--            <button type="submit" class="btn">Save Location</button>-->
+<!--        </form>-->
+<!--    </div>-->
+
+<!--</div>-->
+
+<!--</body>-->
+<!--</html>-->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Locations</title>
+    <meta charset="UTF-8">
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+        }
+
+        h2, h3 {
+            margin-bottom: 15px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #2f3542;
+            color: white;
+            text-align: left;
+            padding: 12px;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tr:hover {
+            background: #f1f2f6;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #3742fa;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: #3742fa;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .btn:hover {
+            background: #2f35d6;
+        }
+
+        .success {
+            color: green;
+            margin-bottom: 10px;
+        }
+
+        #map {
+            height: 400px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <h2>📍 Locations</h2>
+
+    <!-- TABLE -->
+    <div class="card">
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Address</th>
+                <th>Radius</th>
+            </tr>
+
+            <tr th:each="loc : ${locations}">
+                <td th:text="${loc.name}"></td>
+                <td th:text="${loc.address}"></td>
+                <td th:text="${loc.radiusInMeters} + ' m'"></td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- FORM -->
+    <div class="card">
+        <h3>Add Location</h3>
+
+        <p class="success" th:if="${param.success}">
+            Location added successfully!
+        </p>
+
+        <!-- MAP -->
+        <div id="map"></div>
+
+        <form action="/admin/location" method="post">
+            <input type="text" name="name" placeholder="Name" required>
+            <input type="text" name="address" id="address" placeholder="Address" required>
+
+            <input type="number" step="any" name="latitude" id="latitude" placeholder="Latitude" required readonly>
+            <input type="number" step="any" name="longitude" id="longitude" placeholder="Longitude" required readonly>
+            <input type="number" step="any" name="radiusInMeters" id="radius" placeholder="Radius (meters)" required>
+
+            <button type="submit" class="btn">Save Location</button>
+        </form>
+    </div>
+
+</div>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+    // Default map position (Częstochowa)
+    var map = L.map('map').setView([50.8118, 19.1203], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    var marker;
+    var circle;
+
+    map.on('click', function (e) {
+        var lat = e.latlng.lat;
+        var lng = e.latlng.lng;
+
+        // Set inputs
+        document.getElementById("latitude").value = lat;
+        document.getElementById("longitude").value = lng;
+
+        // Marker
+        if (marker) {
+            marker.setLatLng(e.latlng);
+        } else {
+            marker = L.marker(e.latlng).addTo(map);
+        }
+
+        // Draw radius if exists
+        var radius = document.getElementById("radius").value;
+
+        if (circle) {
+            map.removeLayer(circle);
+        }
+
+        if (radius) {
+            circle = L.circle(e.latlng, {
+                radius: radius
+            }).addTo(map);
+        }
+
+        // Reverse geocoding (auto address)
+        fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.display_name) {
+                    document.getElementById("address").value = data.display_name;
+                }
+            });
+    });
+
+    // Update circle when radius changes
+    document.getElementById("radius").addEventListener("input", function () {
+        if (marker) {
+            var latlng = marker.getLatLng();
+
+            if (circle) {
+                map.removeLayer(circle);
+            }
+
+            circle = L.circle(latlng, {
+                radius: this.value
+            }).addTo(map);
+        }
+    });
+
+    // Optional: get user location
+    function locateUser() {
+        map.locate({setView: true, maxZoom: 16});
+    }
+
+    map.on('locationfound', function (e) {
+        map.setView(e.latlng, 16);
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,199 @@
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <title>User Details</title>-->
+
+<!--    <style>-->
+<!--        body {-->
+<!--            font-family: Arial;-->
+<!--            background: #f4f6f9;-->
+<!--            padding: 30px;-->
+<!--        }-->
+
+<!--        .card {-->
+<!--            background: white;-->
+<!--            padding: 20px;-->
+<!--            border-radius: 10px;-->
+<!--            box-shadow: 0 5px 15px rgba(0,0,0,0.1);-->
+<!--        }-->
+
+<!--        h2 {-->
+<!--            margin-bottom: 20px;-->
+<!--        }-->
+
+<!--        table {-->
+<!--            width: 100%;-->
+<!--        }-->
+
+<!--        th, td {-->
+<!--            padding: 10px;-->
+<!--        }-->
+
+<!--        .present {-->
+<!--            color: green;-->
+<!--            font-weight: bold;-->
+<!--        }-->
+
+<!--        .absent {-->
+<!--            color: red;-->
+<!--            font-weight: bold;-->
+<!--        }-->
+
+<!--        .btn {-->
+<!--            padding: 5px 10px;-->
+<!--            background: #ff4757;-->
+<!--            color: white;-->
+<!--            border: none;-->
+<!--            border-radius: 5px;-->
+<!--            cursor: pointer;-->
+<!--        }-->
+
+<!--        .btn:hover {-->
+<!--            background: #e84118;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--<div class="card">-->
+<!--    <h2 th:text="${user.email}"></h2>-->
+
+<!--    <table>-->
+<!--        <tr>-->
+<!--            <th>Date</th>-->
+<!--            <th>Status</th>-->
+<!--            <th>Action</th>-->
+<!--        </tr>-->
+
+<!--        <tr th:each="day : ${days}">-->
+<!--            <td th:text="${day.localDate}"></td>-->
+
+<!--            <td>-->
+<!--                <span th:text="${day.isConfirmed ? 'Present' : 'Absent'}"-->
+<!--                      th:classappend="${day.isConfirmed} ? 'present' : 'absent'">-->
+<!--                </span>-->
+<!--            </td>-->
+
+<!--            <td>-->
+<!--                <button class="btn"-->
+<!--                        th:onclick="'toggleStatus(' + ${day.id} + ')'">-->
+<!--                    Toggle-->
+<!--                </button>-->
+<!--            </td>-->
+<!--        </tr>-->
+<!--    </table>-->
+<!--</div>-->
+
+<!--<script>-->
+<!--    function toggleStatus(dayId) {-->
+<!--        fetch('/admin/day/toggle/' + dayId, {-->
+<!--            method: 'POST'-->
+<!--        }).then(() => location.reload());-->
+<!--    }-->
+<!--</script>-->
+
+<!--</body>-->
+<!--</html>-->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>User Details</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f6f9;
+            padding: 30px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        .present {
+            color: green;
+            font-weight: bold;
+        }
+
+        .absent {
+            color: red;
+            font-weight: bold;
+        }
+
+        .btn {
+            padding: 5px 10px;
+            background: #3742fa;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #2f35d6;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2 th:text="${user.email}"></h2>
+
+    <table>
+        <tr>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+
+        <tr th:each="day : ${days}">
+            <td th:text="${day.localDate}"></td>
+
+            <td>
+                <span th:text="${day.isConfirmed ? 'Present' : 'Absent'}"
+                      th:classappend="${day.isConfirmed} ? 'present' : 'absent'">
+                </span>
+            </td>
+
+            <td>
+                <!-- ✅ SAFE VERSION -->
+                <button class="btn"
+                        th:data-user-id="${user.id}"
+                        th:data-date="${day.localDate}"
+                        onclick="toggleStatus(this)">
+                    Toggle
+                </button>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<script>
+    function toggleStatus(btn) {
+        const userId = btn.dataset.userId;
+        const date = btn.dataset.date;
+
+        fetch('/admin/day/toggle?userId=' + userId + '&date=' + date, {
+            method: 'POST'
+        }).then(() => location.reload());
+    }
+</script>
+
+</body>
+</html>

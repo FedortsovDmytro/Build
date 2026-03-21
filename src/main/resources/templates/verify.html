@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Verify</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<div class="card">
+    <h2>Email Verification</h2>
+
+    <p>Enter the code from your email</p>
+
+    <form id="verifyForm">
+        <input type="text" name="code" placeholder="Verification Code" required>
+        <button type="submit">Verify</button>
+    </form>
+
+    <p class="message" id="message"></p>
+</div>
+
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const email = urlParams.get("email");
+
+    document.getElementById("verifyForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        const code = this.code.value;
+
+        fetch(`/auth/verify?email=${email}&code=${code}`, {
+            method: "POST"
+        })
+        .then(res => res.text())
+        .then(msg => {
+            document.getElementById("message").innerText = msg;
+
+            if (msg.includes("verified")) {
+                setTimeout(() => {
+                    window.location.href = "/login";
+                }, 1500);
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
