@@ -1,9 +1,12 @@
-
 version: "3.9"
+
 services:
   build-mysql:
     image: mysql:8.0
     container_name: build-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: build
     ports:
       - "3307:3306"
     volumes:
