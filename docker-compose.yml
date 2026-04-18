@@ -5,8 +5,8 @@ services:
     image: mysql:8.0
     container_name: build-mysql
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: build
+      MYSQL_ROOT_PASSWORD: root     # ✅ MUST be here
+      MYSQL_DATABASE: build         # ✅ MUST be here
     ports:
       - "3307:3306"
     volumes:
