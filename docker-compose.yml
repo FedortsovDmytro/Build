@@ -4,11 +4,6 @@ services:
   build-mysql:
     image: mysql:8.0
     container_name: build-mysql
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://build-mysql:3306/build
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: root
-      SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
     ports:
       - "3307:3306"
     volumes:
